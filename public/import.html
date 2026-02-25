@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Import Students - Teacher Dashboard</title>
+    <link rel="stylesheet" href="/styles.css">
+    <link rel="stylesheet" href="/styles-i18n.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Navigation -->
+        <nav class="navbar">
+            <div class="nav-brand">Teacher Dashboard</div>
+            <div class="nav-menu">
+                <a href="/dashboard" class="nav-link" data-i18n="nav.dashboard">Dashboard</a>
+                <a href="/templates" class="nav-link" data-i18n="nav.templates">Templates</a>
+                <a href="/exams" class="nav-link" data-i18n="nav.exams">Exams</a>
+                <a href="/courses" class="nav-link" data-i18n="nav.courses">Courses</a>
+                <a href="/import" class="nav-link active" data-i18n="nav.import">Import Students</a>
+                <a href="/" class="nav-link" data-i18n="nav.students">Students</a>
+                
+                <!-- Language Selector -->
+                <div class="language-selector"></div>
+                
+                <button onclick="logout()" class="btn btn-logout">Logout</button>
+            </div>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <div class="page-header">
+                <h1 data-i18n="import.title">Import Students</h1>
+                <p data-i18n="import.subtitle">Bulk import students from CSV or Excel files</p>
+            </div>
+
+            <!-- File Upload Section -->
+            <section class="form-section">
+                <h2 data-i18n="import.uploadStudent">Upload Student List</h2>
+                <div class="upload-area" id="uploadArea">
+                    <input type="file" id="fileInput" accept=".csv,.xlsx,.xls" style="display: none;">
+                    <div class="upload-content">
+                        <div class="upload-icon">📁</div>
+                        <h3 data-i18n="templates.dragDrop">Drag and drop your file</h3>
+                        <p><span data-i18n="templates.orClick">or click to browse</span></p>
+                        <p class="upload-hint" data-i18n="import.supportedFormats">Supported formats: CSV, XLSX, XLS</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- File Preview Section -->
+            <section id="previewSection" class="form-section" style="display: none;">
+                <h2 data-i18n="import.filePreview">File Preview</h2>
+                <p id="fileInfo" class="file-info"></p>
+                
+                <h3 data-i18n="import.mappingForm">Column Mapping</h3>
+                <p class="info-text" data-i18n="import.dataPreview">Map the columns from your file to student fields</p>
+                <div id="mappingForm" class="mapping-form"></div>
+
+                <div class="preview-table-wrapper">
+                    <h3 data-i18n="templates.preview">Data Preview</h3>
+                    <table class="preview-table">
+                        <thead id="previewTableHead"></thead>
+                        <tbody id="previewTableBody"></tbody>
+                    </table>
+                </div>
+
+                <div class="button-group">
+                    <button onclick="importFile()" class="btn btn-primary" data-i18n="import.importBtn">Import Students</button>
+                    <button onclick="resetUpload()" class="btn btn-secondary" data-i18n="btn.cancel">Cancel</button>
+                </div>
+            </section>
+
+            <!-- Import Results Section -->
+            <section id="resultsSection" class="form-section" style="display: none;">
+                <h2 data-i18n="import.importHistory">Import Results</h2>
+                <div id="resultsContent"></div>
+            </section>
+
+            <!-- Import History Section -->
+            <section class="list-section">
+                <h2 data-i18n="import.historyTitle">Import History</h2>
+                <div id="historyList" class="history-grid">
+                    <p class="loading" data-i18n="msg.loading">Loading import history...</p>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Template Sample -->
+    <div style="display: none;">
+        <h2 style="margin-top: 40px;">CSV Template</h2>
+        <p>Here's a sample CSV format:</p>
+        <pre>fullName,email,phone,age,grade
+John Doe,john@example.com,1234567890,18,A
+Jane Smith,jane@example.com,0987654321,17,B</pre>
+    </div>
+
+    <script src="/language-selector.js"></script>
+    <script src="/translations.js"></script>
+    <script src="/import.js"></script>
+</body>
+</html>

@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teacher Dashboard</title>
+    <link rel="stylesheet" href="/styles.css">
+    <link rel="stylesheet" href="/styles-i18n.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Navigation -->
+        <nav class="navbar">
+            <div class="nav-brand">Teacher Dashboard</div>
+            <div class="nav-menu">
+                <a href="/dashboard" class="nav-link active" data-i18n="nav.dashboard">Dashboard</a>
+                <a href="/templates" class="nav-link" data-i18n="nav.templates">Templates</a>
+                <a href="/exams" class="nav-link" data-i18n="nav.exams">Exams</a>
+                <a href="/exam-examples" class="nav-link" data-i18n="nav.examExamples">Exam Examples</a>
+                <a href="/ai-exam-generator" class="nav-link" data-i18n="nav.aiExams">AI Exam Generator</a>
+                <a href="/courses" class="nav-link" data-i18n="nav.courses">Courses</a>
+                <a href="/import" class="nav-link" data-i18n="nav.import">Import Students</a>
+                <a href="/" class="nav-link" data-i18n="nav.students">Students</a>
+                
+                <!-- Language Selector -->
+                <div class="language-selector"></div>
+                
+                <button onclick="logout()" class="btn btn-logout">Logout</button>
+            </div>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <div class="page-header">
+                <h1 id="welcomeMsg" data-i18n="dashboard.welcome">Welcome, Teacher!</h1>
+                <p data-i18n="dashboard.manageExams">Manage exams, templates, and students efficiently</p>
+            </div>
+
+            <!-- Quick Stats -->
+            <section class="stats-section">
+                <div class="stat-card">
+                    <div class="stat-icon">📚</div>
+                    <div class="stat-content">
+                        <h3 id="classCount">0</h3>
+                        <p data-i18n="dashboard.classes">Classes</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">📝</div>
+                    <div class="stat-content">
+                        <h3 id="templateCount">0</h3>
+                        <p data-i18n="dashboard.templates">Templates</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">✏️</div>
+                    <div class="stat-content">
+                        <h3 id="examCount">0</h3>
+                        <p data-i18n="dashboard.exams">Exams</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">👥</div>
+                    <div class="stat-content">
+                        <h3 id="studentCount">0</h3>
+                        <p data-i18n="dashboard.students">Students</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Quick Actions -->
+            <section class="quick-actions">
+                <h2 data-i18n="dashboard.quickActions">Quick Actions</h2>
+                <div class="action-grid">
+                    <a href="/exams" class="action-card">
+                        <div class="action-icon">📝</div>
+                        <h3 data-i18n="dashboard.createExam">Create Exam</h3>
+                        <p data-i18n="dashboard.createExamAction">Create a new exam from template or scratch</p>
+                    </a>
+                    <a href="/templates" class="action-card">
+                        <div class="action-icon">📚</div>
+                        <h3 data-i18n="dashboard.buildTemplate">Build Template</h3>
+                        <p data-i18n="dashboard.buildTemplateAction">Create reusable exam templates</p>
+                    </a>
+                    <a href="/import" class="action-card">
+                        <div class="action-icon">📤</div>
+                        <h3 data-i18n="dashboard.importStudents">Import Students</h3>
+                        <p data-i18n="dashboard.importStudentsAction">Bulk import students from CSV/Excel</p>
+                    </a>
+                    <a href="/" class="action-card">
+                        <div class="action-icon">👥</div>
+                        <h3 data-i18n="dashboard.manageStudents">Manage Students</h3>
+                        <p data-i18n="dashboard.manageStudentsAction">Add, edit, and view student profiles</p>
+                    </a>
+                </div>
+            </section>
+
+            <!-- Recent Exams -->
+            <section class="list-section">
+                <h2 data-i18n="dashboard.recentExams">Recent Exams</h2>
+                <div id="recentExams" class="list-grid">
+                    <p class="loading" data-i18n="msg.loading">Loading exams...</p>
+                </div>
+            </section>
+
+            <!-- Recent Templates -->
+            <section class="list-section">
+                <h2 data-i18n="dashboard.recentTemplates">Recent Templates</h2>
+                <div id="recentTemplates" class="list-grid">
+                    <p class="loading" data-i18n="msg.loading">Loading templates...</p>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script src="/language-selector.js"></script>
+    <script src="/translations.js"></script>
+    <script src="/dashboard.js"></script>
+</body>
+</html>

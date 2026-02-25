@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Courses - Teacher Dashboard</title>
+    <link rel="stylesheet" href="/styles.css">
+    <link rel="stylesheet" href="/styles-i18n.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Navigation -->
+        <nav class="navbar">
+            <div class="nav-brand" data-i18n="app.name">Teacher Dashboard</div>
+            <div class="nav-menu">
+                <a href="/dashboard" class="nav-link" data-i18n="nav.dashboard">Dashboard</a>
+                <a href="/templates" class="nav-link" data-i18n="nav.templates">Templates</a>
+                <a href="/exams" class="nav-link" data-i18n="nav.exams">Exams</a>
+                <a href="/exam-examples" class="nav-link" data-i18n="nav.examExamples">Exam Examples</a>
+                <a href="/ai-exam-generator" class="nav-link" data-i18n="nav.aiExams">AI Exam Generator</a>
+                <a href="/courses" class="nav-link active" data-i18n="nav.courses">Courses</a>
+                <a href="/import" class="nav-link" data-i18n="nav.import">Import Students</a>
+                <a href="/" class="nav-link" data-i18n="nav.students">Students</a>
+                
+                <!-- Language Selector -->
+                <div class="language-selector"></div>
+                
+                <button onclick="logout()" class="btn btn-logout" data-i18n="nav.logout">Logout</button>
+            </div>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <div class="page-header">
+                <h1 data-i18n="courses.title">Courses</h1>
+                <p data-i18n="courses.subtitle">Manage and upload courses</p>
+            </div>
+
+            <!-- Add Course Section -->
+            <section class="form-section">
+                <h2 data-i18n="courses.addNew">Add New Course</h2>
+                <form id="courseForm">
+                    <div class="form-group">
+                        <label for="courseName" data-i18n="courses.name">Course Name *</label>
+                        <input type="text" id="courseName" required placeholder="e.g., Introduction to Programming" data-i18n="courses.enterName" data-i18n-attr="placeholder">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="courseDescription" data-i18n="courses.description">Description</label>
+                        <textarea id="courseDescription" rows="3" placeholder="Describe the course..." data-i18n="courses.enterDescription" data-i18n-attr="placeholder"></textarea>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="instructor" data-i18n="courses.instructor">Instructor</label>
+                            <input type="text" id="instructor" placeholder="Instructor name" data-i18n="courses.enterInstructor" data-i18n-attr="placeholder">
+                        </div>
+                        <div class="form-group">
+                            <label for="semester" data-i18n="courses.semester">Semester</label>
+                            <input type="text" id="semester" placeholder="e.g., Fall 2024" data-i18n="courses.enterSemester" data-i18n-attr="placeholder">
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary" data-i18n="btn.create">Create Course</button>
+                </form>
+            </section>
+
+            <!-- File Upload Section -->
+            <section class="form-section">
+                <h2 data-i18n="courses.bulkUpload">Bulk Upload Courses</h2>
+                <div class="upload-area" id="uploadArea">
+                    <input type="file" id="fileInput" accept=".pdf,.doc,.docx,.txt,.ppt,.pptx">
+                    <div class="upload-content">
+                        <div class="upload-icon">📁</div>
+                        <h3 data-i18n="templates.dragDrop">Drag and drop your file</h3>
+                        <p><span data-i18n="templates.orClick">or click to browse</span></p>
+                        <p class="upload-hint" data-i18n="courses.supportedFormats">Supported formats: CSV, XLSX, XLS</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Courses List -->
+            <section class="list-section">
+                <h2 data-i18n="courses.list">Courses List</h2>
+                <div id="coursesList" class="table-responsive">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th data-i18n="courses.name">Name</th>
+                                <th data-i18n="courses.instructor">Instructor</th>
+                                <th data-i18n="courses.semester">Semester</th>
+                                <th data-i18n="btn.actions">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="coursesTableBody">
+                            <tr><td colspan="7" style="text-align: center;" data-i18n="msg.loading">Loading...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Edit Modal -->
+    <div id="editModal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <span class="close" onclick="closeEditModal()">&times;</span>
+            <h2 data-i18n="courses.editCourse">Edit Course</h2>
+            <form id="editCourseForm">
+                <input type="hidden" id="editCourseId">
+                
+                <div class="form-group">
+                    <label for="editName" data-i18n="courses.name">Course Name</label>
+                    <input type="text" id="editName" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="editDescription" data-i18n="courses.description">Description</label>
+                    <textarea id="editDescription" rows="3"></textarea>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="editInstructor" data-i18n="courses.instructor">Instructor</label>
+                        <input type="text" id="editInstructor">
+                    </div>
+                    <div class="form-group">
+                        <label for="editSemester" data-i18n="courses.semester">Semester</label>
+                        <input type="text" id="editSemester">
+                    </div>
+                </div>
+
+                <div style="display: flex; gap: 10px; margin-top: 20px;">
+                    <button type="submit" class="btn btn-primary" data-i18n="btn.update">Update</button>
+                    <button type="button" class="btn btn-secondary" onclick="closeEditModal()" data-i18n="btn.cancel">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Alert Messages -->
+    <div id="alertContainer"></div>
+
+    <script src="/translations.js"></script>
+    <script src="/language-selector.js"></script>
+    <script src="/courses.js"></script>
+</body>
+</html>

@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Exam Generator - Teacher Dashboard</title>
+    <link rel="stylesheet" href="/styles.css">
+    <link rel="stylesheet" href="/styles-i18n.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Navigation -->
+        <nav class="navbar">
+            <div class="nav-brand" data-i18n="app.name">Teacher Dashboard</div>
+            <div class="nav-menu">
+                <a href="/dashboard" class="nav-link" data-i18n="nav.dashboard">Dashboard</a>
+                <a href="/templates" class="nav-link" data-i18n="nav.templates">Templates</a>
+                <a href="/exams" class="nav-link" data-i18n="nav.exams">Exams</a>
+                <a href="/exam-examples" class="nav-link" data-i18n="nav.examExamples">Exam Examples</a>
+                <a href="/ai-exam-generator" class="nav-link active" data-i18n="nav.aiExams">AI Exam Generator</a>
+                <a href="/courses" class="nav-link" data-i18n="nav.courses">Courses</a>
+                <a href="/import" class="nav-link" data-i18n="nav.import">Import Students</a>
+                <a href="/" class="nav-link" data-i18n="nav.students">Students</a>
+                
+                <!-- Language Selector -->
+                <div class="language-selector"></div>
+                
+                <button onclick="logout()" class="btn btn-logout" data-i18n="nav.logout">Logout</button>
+            </div>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <div class="page-header">
+                <h1 data-i18n="aiExam.title">AI Exam Generator</h1>
+                <p data-i18n="aiExam.subtitle">Let AI automatically generate exam questions for you</p>
+            </div>
+
+            <!-- AI Exam Generation Section -->
+            <section class="form-section">
+                <h2 data-i18n="aiExam.generateExam">Generate Exam with AI</h2>
+                <form id="aiExamForm">
+                    <!-- Select Courses Section -->
+                    <div class="form-group">
+                        <label for="selectedCourses" data-i18n="aiExam.selectCourses">Select Course(s) to Include *</label>
+                        <div id="coursesList" style="border: 1px solid #ddd; border-radius: 5px; padding: 15px; max-height: 150px; overflow-y: auto; background: #f9f9f9;">
+                            <p style="text-align: center; color: #999;" data-i18n="aiExam.noCourses">No courses uploaded. Upload courses first in Exam Examples Manager.</p>
+                        </div>
+                    </div>
+
+                    <!-- Select Exam Examples Section -->
+                    <div class="form-group">
+                        <label for="selectedExamples" data-i18n="aiExam.selectExamples">Select Exam Example(s) as Reference</label>
+                        <div id="examplesList" style="border: 1px solid #ddd; border-radius: 5px; padding: 15px; max-height: 150px; overflow-y: auto; background: #f9f9f9;">
+                            <p style="text-align: center; color: #999;" data-i18n="aiExam.noExamples">No exam examples uploaded. Upload examples first in Exam Examples Manager.</p>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="examSubject" data-i18n="aiExam.subject">Subject/Topic *</label>
+                        <input type="text" id="examSubject" required placeholder="e.g., Algebra, World War II, Photosynthesis" data-i18n="aiExam.enterSubject" data-i18n-attr="placeholder">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="numQuestions" data-i18n="aiExam.numQuestions">Number of Questions *</label>
+                        <input type="number" id="numQuestions" required min="5" max="100" value="10" placeholder="5-100">
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="difficulty" data-i18n="aiExam.difficulty">Difficulty Level *</label>
+                            <select id="difficulty" required>
+                                <option value="">-- Select --</option>
+                                <option value="easy" data-i18n="aiExam.easy">Easy</option>
+                                <option value="medium" data-i18n="aiExam.medium">Medium</option>
+                                <option value="hard" data-i18n="aiExam.hard">Hard</option>
+                                <option value="mixed" data-i18n="aiExam.mixed">Mixed</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="examTitle" data-i18n="aiExam.examTitle">Exam Title *</label>
+                            <input type="text" id="examTitle" required placeholder="e.g., Final Exam - Algebra" data-i18n="aiExam.enterExamTitle" data-i18n-attr="placeholder">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="questionTypes" data-i18n="aiExam.questionTypes">Question Types *</label>
+                        <div class="checkbox-group">
+                            <label>
+                                <input type="checkbox" name="questionTypes" value="mcq" checked> 
+                                <span data-i18n="aiExam.multipleChoice">Multiple Choice</span>
+                            </label>
+                            <label>
+                                <input type="checkbox" name="questionTypes" value="shortanswer"> 
+                                <span data-i18n="aiExam.shortAnswer">Short Answer</span>
+                            </label>
+                            <label>
+                                <input type="checkbox" name="questionTypes" value="essay"> 
+                                <span data-i18n="aiExam.essay">Essay</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="examDescription" data-i18n="aiExam.description">Additional Instructions (Optional)</label>
+                        <textarea id="examDescription" rows="3" placeholder="e.g., Focus on chapters 5-8, include diagrams, emphasize problem-solving" data-i18n="aiExam.enterDescription" data-i18n-attr="placeholder"></textarea>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary" id="generateBtn" data-i18n="aiExam.generate">Generate Exam with AI</button>
+                </form>
+            </section>
+
+            <!-- Progress Section -->
+            <div id="progressSection" style="display: none;">
+                <section class="form-section">
+                    <h3 data-i18n="aiExam.generating">Generating your exam...</h3>
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="progressFill"></div>
+                    </div>
+                    <p id="progressText" style="text-align: center; margin-top: 10px;"></p>
+                </section>
+            </div>
+
+            <!-- Generated Exam Preview Section -->
+            <div id="previewSection" style="display: none;">
+                <section class="form-section">
+                    <h3 data-i18n="aiExam.preview">Exam Preview</h3>
+                    <div id="examPreview" style="max-height: 500px; overflow-y: auto; padding: 15px; background: #f9f9f9; border-radius: 5px; margin-bottom: 20px;"></div>
+                    <div style="display: flex; gap: 10px;">
+                        <button class="btn btn-primary" onclick="saveGeneratedExam()" data-i18n="aiExam.save">Save Exam</button>
+                        <button class="btn btn-secondary" onclick="resetForm()" data-i18n="aiExam.generateAgain">Generate Again</button>
+                    </div>
+                </section>
+            </div>
+        </main>
+    </div>
+
+    <!-- Alert Messages -->
+    <div id="alertContainer"></div>
+
+    <script src="/translations.js"></script>
+    <script src="/language-selector.js"></script>
+    <script src="/ai-exam-generator.js"></script>
+</body>
+</html>

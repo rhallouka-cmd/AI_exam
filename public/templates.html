@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Exam Templates - Teacher Dashboard</title>
+    <link rel="stylesheet" href="/styles.css">
+    <link rel="stylesheet" href="/styles-i18n.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Navigation -->
+        <nav class="navbar">
+            <div class="nav-brand">Teacher Dashboard</div>
+            <div class="nav-menu">
+                <a href="/dashboard" class="nav-link" data-i18n="nav.dashboard">Dashboard</a>
+                <a href="/templates" class="nav-link active" data-i18n="nav.templates">Templates</a>
+                <a href="/exams" class="nav-link" data-i18n="nav.exams">Exams</a>
+                <a href="/courses" class="nav-link" data-i18n="nav.courses">Courses</a>
+                <a href="/import" class="nav-link" data-i18n="nav.import">Import Students</a>
+                <a href="/" class="nav-link" data-i18n="nav.students">Students</a>
+                
+                <!-- Language Selector -->
+                <div class="language-selector"></div>
+                
+                <button onclick="logout()" class="btn btn-logout" data-i18n="nav.logout">Logout</button>
+            </div>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <div class="page-header">
+                <h1 data-i18n="templates.title">Exam Templates</h1>
+                <p data-i18n="templates.subtitle">Create and manage reusable exam templates</p>
+            </div>
+
+            <!-- Create Template Section -->
+            <section class="form-section">
+                <h2 data-i18n="templates.createNew">Create New Template</h2>
+                <form id="templateForm">
+                    <div class="form-group">
+                        <label for="templateName" data-i18n="templates.templateName">Template Name *</label>
+                        <input type="text" id="templateName" required placeholder="e.g., Mid-Term Mathematics" data-i18n="templates.enterName" data-i18n-attr="placeholder">
+                    </div>
+                    <div class="form-group">
+                        <label for="templateDescription" data-i18n="templates.templateDescription">Description</label>
+                        <textarea id="templateDescription" rows="3" placeholder="Describe this template..." data-i18n="templates.enterDescription" data-i18n-attr="placeholder"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="totalMarks" data-i18n="templates.totalMarks">Total Marks</label>
+                        <input type="number" id="totalMarks" min="1" value="100" placeholder="100" data-i18n="templates.enterTotalMarks" data-i18n-attr="placeholder">
+                    </div>
+
+                    <!-- File Upload Section -->
+                    <div class="file-upload-section">
+                        <label data-i18n="templates.uploadExample">Upload Exam Example (Optional)</label>
+                        <p class="file-help" data-i18n="templates.uploadHelp">Upload sample exams, answer keys, or reference documents (PDF, DOC, images, etc.)</p>
+                        <div class="file-drop-zone" id="fileDropZone">
+                            <svg class="upload-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                                <polyline points="17 8 12 3 7 8"></polyline>
+                                <line x1="12" y1="3" x2="12" y2="15"></line>
+                            </svg>
+                            <p><strong data-i18n="templates.dragDrop">Drag and drop files here</strong></p>
+                            <p data-i18n="templates.orClick">or click to browse</p>
+                            <p class="file-formats" data-i18n="templates.fileFormats">Accepted: PDF, DOC, DOCX, JPG, PNG, GIF (Max 10MB)</p>
+                            <input type="file" id="exampleFileInput" style="display: none;" accept=".pdf,.doc,.docx,.jpg,.jpeg,.png,.gif">
+                        </div>
+                        <div id="filePreviewContainer" style="display: none; margin-top: 15px;">
+                            <h4 data-i18n="templates.selectedFile">Selected File:</h4>
+                            <div id="filePreview" class="file-preview"></div>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary" data-i18n="btn.create">Create Template</button>
+                </form>
+            </section>
+
+            <!-- Templates List -->
+            <section class="list-section">
+                <h2 data-i18n="templates.myTemplates">My Templates</h2>
+                <div id="templatesList" class="templates-grid">
+                    <p class="loading">Loading templates...</p>
+                </div>
+            </section>
+
+            <!-- Question Bank Section -->
+            <section class="form-section" id="questionSection" style="display: none;">
+                <h2 data-i18n="templates.addQuestions">Add Questions to Template</h2>
+                <form id="questionForm">
+                    <input type="hidden" id="currentTemplateId">
+                    
+                    <div class="form-group">
+                        <label for="questionType" data-i18n="templates.questionType">Question Type *</label>
+                        <select id="questionType" required>
+                            <option value="" data-i18n="templates.selectType">Select Type</option>
+                            <option value="mcq" data-i18n="templates.mcq">Multiple Choice</option>
+                            <option value="short" data-i18n="templates.shortAnswer">Short Answer</option>
+                            <option value="long" data-i18n="templates.longAnswer">Long Answer</option>
+                            <option value="essay" data-i18n="templates.essay">Essay</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="questionText" data-i18n="templates.questionText">Question Text *</label>
+                        <textarea id="questionText" rows="2" placeholder="Enter the question text..." data-i18n="templates.enterQuestion" data-i18n-attr="placeholder"></textarea>
+                    </div>
+
+                    <div class="form-group" id="optionsDiv" style="display: none;">
+                        <label data-i18n="templates.options">Options (for MCQ)</label>
+                        <input type="text" class="option-input" placeholder="Option A" data-i18n-attr="placeholder" data-i18n-key="templates.optionA">
+                        <input type="text" class="option-input" placeholder="Option B" data-i18n-attr="placeholder" data-i18n-key="templates.optionB">
+                        <input type="text" class="option-input" placeholder="Option C" data-i18n-attr="placeholder" data-i18n-key="templates.optionC">
+                        <input type="text" class="option-input" placeholder="Option D" data-i18n-attr="placeholder" data-i18n-key="templates.optionD">
+                        <button type="button" class="btn btn-secondary" onclick="addOptionInput()" data-i18n="templates.addOption">+ Add Option</button>
+                    </div>
+
+                    <div class="form-group" id="correctAnswerDiv" style="display: none;">
+                        <label for="correctAnswer" data-i18n="templates.correctAnswer">Correct Answer *</label>
+                        <input type="text" id="correctAnswer" placeholder="Enter correct answer" data-i18n="templates.enterCorrectAnswer" data-i18n-attr="placeholder">
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="questionMarks" data-i18n="templates.marks">Marks</label>
+                            <input type="number" id="questionMarks" min="0.5" step="0.5" value="1" placeholder="1" data-i18n="templates.enterMarks" data-i18n-attr="placeholder">
+                        </div>
+                        <div class="form-group">
+                            <label for="questionDifficulty" data-i18n="templates.difficulty">Difficulty</label>
+                            <select id="questionDifficulty">
+                                <option value="easy" data-i18n="templates.easy">Easy</option>
+                                <option value="medium" selected data-i18n="templates.medium">Medium</option>
+                                <option value="hard" data-i18n="templates.hard">Hard</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="questionTopic" data-i18n="templates.topic">Topic</label>
+                            <input type="text" id="questionTopic" placeholder="e.g., Algebra" data-i18n="templates.enterTopic" data-i18n-attr="placeholder">
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary" data-i18n="templates.addQuestion">Add Question</button>
+                    <button type="button" class="btn btn-secondary" onclick="closeQuestionSection()" data-i18n="btn.cancel">Cancel</button>
+                </form>
+
+                <!-- Questions List -->
+                <div id="questionsList" class="questions-list">
+                    <h3 data-i18n="templates.questionsInTemplate">Questions in Template</h3>
+                    <div id="questionsContent"></div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script src="/language-selector.js"></script>
+    <script src="/translations.js"></script>
+    <script src="/templates.js"></script>
+</body>
+</html>

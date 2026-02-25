@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Exams - Teacher Dashboard</title>
+    <link rel="stylesheet" href="/styles.css">
+    <link rel="stylesheet" href="/styles-i18n.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Navigation -->
+        <nav class="navbar">
+            <div class="nav-brand">Teacher Dashboard</div>
+            <div class="nav-menu">
+                <a href="/dashboard" class="nav-link" data-i18n="nav.dashboard">Dashboard</a>
+                <a href="/templates" class="nav-link" data-i18n="nav.templates">Templates</a>
+                <a href="/exams" class="nav-link active" data-i18n="nav.exams">Exams</a>
+                <a href="/exam-examples" class="nav-link" data-i18n="nav.examExamples">Exam Examples</a>
+                <a href="/ai-exam-generator" class="nav-link" data-i18n="nav.aiExams">AI Exam Generator</a>
+                <a href="/courses" class="nav-link" data-i18n="nav.courses">Courses</a>
+                <a href="/import" class="nav-link" data-i18n="nav.import">Import Students</a>
+                <a href="/" class="nav-link" data-i18n="nav.students">Students</a>
+                
+                <!-- Language Selector -->
+                <div class="language-selector"></div>
+                
+                <button onclick="logout()" class="btn btn-logout">Logout</button>
+            </div>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <div class="page-header">
+                <h1 data-i18n="exams.examManagement">Exams Management</h1>
+                <p data-i18n="exams.subtitle">Create, manage, and grade exams</p>
+            </div>
+
+            <!-- Create Exam Section -->
+            <section class="form-section">
+                <h2 data-i18n="exams.createNewExam">Create New Exam</h2>
+                <form id="examForm">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="examTitle" data-i18n="exams.examTitle">Exam Title *</label>
+                            <input type="text" id="examTitle" required placeholder="e.g., Final Exam - Mathematics" data-i18n="exams.enterExamTitle" data-i18n-attr="placeholder">
+                        </div>
+                        <div class="form-group">
+                            <label for="classId" data-i18n="exams.selectClass">Class *</label>
+                            <select id="classId" required>
+                                <option value="" data-i18n="exams.selectClass">Select Class</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="templateId" data-i18n="templates.title">Use Template (Optional)</label>
+                            <select id="templateId">
+                                <option value="" data-i18n="exams.createFromScratch">Create from Scratch</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="totalMarks" data-i18n="templates.totalMarks">Total Marks</label>
+                            <input type="number" id="totalMarks" min="1" value="100" placeholder="100" data-i18n="exams.enterMarks" data-i18n-attr="placeholder">
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="examDate" data-i18n="exams.dateScheduled">Exam Date</label>
+                            <input type="datetime-local" id="examDate">
+                        </div>
+                        <div class="form-group">
+                            <label for="duration" data-i18n="exams.duration">Duration (Minutes)</label>
+                            <input type="number" id="duration" min="30" value="60" placeholder="60" data-i18n="exams.enterDuration" data-i18n-attr="placeholder">
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary" data-i18n="exams.createExam">Create Exam</button>
+                </form>
+            </section>
+
+            <!-- Classes Section -->
+            <section class="form-section">
+                <h2 data-i18n="exams.manageClasses">Manage Classes</h2>
+                <form id="classForm">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="className" data-i18n="exams.className">Class Name *</label>
+                            <input type="text" id="className" required placeholder="e.g., Grade 10 - A" data-i18n="exams.enterClassName" data-i18n-attr="placeholder">
+                        </div>
+                        <div class="form-group">
+                            <label for="academicYear" data-i18n="exams.academicYear">Academic Year</label>
+                            <input type="text" id="academicYear" placeholder="e.g., 2024-2025" data-i18n="exams.enterAcademicYear" data-i18n-attr="placeholder">
+                        </div>
+                        <div class="form-group">
+                            <label for="section" data-i18n="exams.section">Section</label>
+                            <input type="text" id="section" placeholder="e.g., A, B, C" data-i18n="exams.enterSection" data-i18n-attr="placeholder">
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-primary" data-i18n="btn.create">Add Class</button>
+                </form>
+
+                <div id="classList" class="list-grid">
+                    <p class="loading">Loading classes...</p>
+                </div>
+            </section>
+
+            <!-- Exams List -->
+            <section class="list-section">
+                <h2 data-i18n="exams.myExams">My Exams</h2>
+                <div class="filter-tabs">
+                    <button class="tab-btn active" onclick="filterExams('all')" data-i18n="exams.allExams">All</button>
+                    <button class="tab-btn" onclick="filterExams('draft')" data-i18n="exams.drafts">Draft</button>
+                    <button class="tab-btn" onclick="filterExams('published')" data-i18n="exams.published">Published</button>
+                    <button class="tab-btn" onclick="filterExams('completed')" data-i18n="exams.completed">Completed</button>
+                </div>
+                <div id="examsList" class="exams-grid">
+                    <p class="loading" data-i18n="msg.loading">Loading exams...</p>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Exam Editor Modal -->
+    <div id="examEditorModal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <span class="close" onclick="closeExamEditor()">&times;</span>
+            <h2 data-i18n="exams.addQuestions">Manage Exam Questions</h2>
+            <form id="examQuestionForm">
+                <input type="hidden" id="editExamId">
+                <div class="form-group">
+                    <label for="editQuestionType" data-i18n="templates.questionType">Question Type *</label>
+                    <select id="editQuestionType" required>
+                        <option value="" data-i18n="templates.selectType">Select Type</option>
+                        <option value="mcq" data-i18n="templates.mcq">Multiple Choice</option>
+                        <option value="short" data-i18n="templates.shortAnswer">Short Answer</option>
+                        <option value="long" data-i18n="templates.longAnswer">Long Answer</option>
+                        <option value="essay" data-i18n="templates.essay">Essay</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="editQuestionText" data-i18n="templates.questionText">Question Text *</label>
+                    <textarea id="editQuestionText" rows="3" required placeholder="Enter the question..." data-i18n="exams.editQuestion" data-i18n-attr="placeholder"></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="editQuestionMarks" data-i18n="templates.marks">Marks</label>
+                    <input type="number" id="editQuestionMarks" min="0.5" step="0.5" value="1">
+                </div>
+                <button type="submit" class="btn btn-primary" data-i18n="exams.addQuestions">Add Question to Exam</button>
+            </form>
+
+            <div id="examQuestionsContent" class="questions-list" style="margin-top: 20px;"></div>
+        </div>
+    </div>
+
+    <!-- Grading Modal -->
+    <div id="gradingModal" class="modal" style="display: none;">
+        <div class="modal-content large">
+            <span class="close" onclick="closeGradingModal()">&times;</span>
+            <h2 data-i18n="exams.gradeStudents">Grade Exam</h2>
+            <div id="gradingContent"></div>
+        </div>
+    </div>
+
+    <script src="/language-selector.js"></script>
+    <script src="/translations.js"></script>
+    <script src="/exams.js"></script>
+</body>
+</html>
