@@ -16,10 +16,11 @@ try {
   console.error('Database error:', e.message);
 }
 
-let authRouter, examsRouter, importsRouter, examExamplesRouter;
+let authRouter, examsRouter, importsRouter, examExamplesRouter, verifyToken;
 try {
   const auth = require('../src/auth');
   authRouter = auth.router;
+  verifyToken = auth.verifyToken;
   examsRouter = require('../src/exams');
   importsRouter = require('../src/imports');
   examExamplesRouter = require('../src/exam-examples');
@@ -61,6 +62,74 @@ if (importsRouter) app.use('/api/imports', importsRouter);
 
 // Exam Examples Routes
 if (examExamplesRouter) app.use('/api/exam-examples', examExamplesRouter);
+
+// Student Management Routes
+if (verifyToken && db && db.getAllStudents) {
+  // Get all students
+  app.get('/api/students', verifyToken, (req, res) => {
+    db.getAllStudents((err, students) => {
+      if (err) {
+        return res.status(500).json({ error: err.message });
+      }
+      res.json(students);
+    });
+  });
+
+  // Get a single student by ID
+  app.get('/api/students/:id', verifyToken, (req, res) => {
+    const { id } = req.params;
+    db.getStudentById(id, (err, student) => {
+      if (err) {
+        return res.status(500).json({ error: err.message });
+      }
+      if (!student) {
+        return res.status(404).json({ error: 'Student not found' });
+      }
+      res.json(student);
+    });
+  });
+
+  // Create a new student
+  app.post('/api/students', verifyToken, (req, res) => {
+    const { fullName, age, email, phone, grade } = req.body;
+    
+    if (!fullName || !email) {
+      return res.status(400).json({ error: 'Full name and email are required' });
+    }
+
+    db.createStudent({ fullName, age, email, phone, grade }, (err, studentId) => {
+      if (err) {
+        return res.status(500).json({ error: err.message });
+      }
+      res.status(201).json({ id: studentId, message: 'Student created successfully' });
+    });
+  });
+
+  // Update a student
+  app.put('/api/students/:id', verifyToken, (req, res) => {
+    const { id } = req.params;
+    const { fullName, age, email, phone, grade } = req.body;
+
+    db.updateStudent(id, { fullName, age, email, phone, grade }, (err) => {
+      if (err) {
+        return res.status(500).json({ error: err.message });
+      }
+      res.json({ message: 'Student updated successfully' });
+    });
+  });
+
+  // Delete a student
+  app.delete('/api/students/:id', verifyToken, (req, res) => {
+    const { id } = req.params;
+    
+    db.deleteStudent(id, (err) => {
+      if (err) {
+        return res.status(500).json({ error: err.message });
+      }
+      res.json({ message: 'Student deleted successfully' });
+    });
+  });
+}
 
 // Health check endpoint
 app.get('/api/health', (req, res) => {
